@@ -1,0 +1,50 @@
+<body>
+    <div class="left">
+        <h1>App Name</h1>
+    </div>
+    <div class="righ">
+        <div class="main">
+        {% block content %}
+        {% endblock %}
+        </div>
+    </div>
+</body>
+
+<style>
+    *{
+        margin:0px;
+        box-sizing: border-box;
+    }
+    body{
+        min-height: 700px;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        /* justify-content: center; */
+        align-items: center;
+    }
+    .left{
+        height:700px;
+        width: 50%;
+        display: flex;
+        /* flex-direction: column; */
+        justify-content: center;
+        align-items: center;
+        background-color: whitesmoke;
+    }
+    .right{
+        height:700px;
+        width: 50%;
+        display: flex;
+        /* flex-direction: column; */
+        justify-content: center;
+        align-items: center;
+        background-color: rgb(167, 136, 100);
+    }
+    .main{
+        display: flex;
+        /* flex-direction: column; */
+        justify-content: center;
+        align-items: center;
+    }
+</style>
