@@ -1,50 +1,81 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Book Manager{% endblock %}</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap">
+</head>
 <body>
     <div class="left">
-        <h1>App Name</h1>
-    </div>
-    <div class="righ">
-        <div class="main">
-        {% block content %}
-        {% endblock %}
+        <div class="brand">
+            <h1>App Name</h1>
+            <p>Your tagline goes here.</p>
         </div>
     </div>
-</body>
+    <div class="right">
+        <div class="main">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
 
 <style>
-    *{
-        margin:0px;
+    * {
+        margin: 0;
+        padding: 0;
         box-sizing: border-box;
     }
-    body{
-        min-height: 700px;
+    body {
+        min-height: 100vh;
         width: 100%;
         display: flex;
         flex-direction: row;
-        /* justify-content: center; */
-        align-items: center;
+        font-family: Inter, Arial, sans-serif;
+        color: #1b1b1f;
     }
-    .left{
-        height:700px;
+    .left {
         width: 50%;
+        min-height: 100vh;
         display: flex;
-        /* flex-direction: column; */
         justify-content: center;
         align-items: center;
-        background-color: whitesmoke;
+        padding: 48px;
+        background-color: #3b5bdb;
+        color: #fff;
     }
-    .right{
-        height:700px;
+    .brand h1 {
+        font-size: 44px;
+        line-height: 1.15;
+        margin-bottom: 12px;
+    }
+    .brand p {
+        font-size: 18px;
+        opacity: 0.9;
+    }
+    .right {
         width: 50%;
+        min-height: 100vh;
         display: flex;
-        /* flex-direction: column; */
         justify-content: center;
         align-items: center;
-        background-color: rgb(167, 136, 100);
+        padding: 24px;
+        background-color: #f6f5f1;
     }
-    .main{
+    .main {
+        width: 100%;
         display: flex;
-        /* flex-direction: column; */
         justify-content: center;
         align-items: center;
+    }
+
+    @media (max-width: 800px) {
+        body { flex-direction: column; }
+        .left { width: 100%; min-height: 0; padding: 32px 24px; }
+        .brand h1 { font-size: 30px; }
+        .right { width: 100%; min-height: 0; flex: 1; }
     }
 </style>
+</body>
+</html>
