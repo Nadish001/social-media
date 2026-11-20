@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="/static/css/profile.css">
+
+<section class="pf-card">
+    <div class="pf-header">
+        <img class="pf-photo" src="/social/{{ pro.pro_pic }}" alt="{{ pro.user }}'s profile photo">
+
+        <div class="pf-info">
+            <div class="pf-row">
+                <h2 class="pf-username">{{ pro.user }}</h2>
+                <a class="pf-edit" href="{% url 'proedit' %}">Edit profile</a>
+                <a class="pf-edit pf-edit--solid" href="{% url 'postpage' %}">New post</a>
+            </div>
+            <p class="pf-meta">{{ pro.email }}</p>
+            <p class="pf-meta">{{ pro.phone }}</p>
+        </div>
+
+        <div class="pf-bio">
+            <p>{{ pro.bio }}</p>
+        </div>
+    </div>
+
+    <div class="pf-tabs" role="tablist">
+        <button type="button" class="pf-tab is-active" role="tab" aria-selected="true" data-tab="posts">
+            <span class="material-symbols-outlined">grid_on</span><span>Posts</span>
+            <span class="pf-count">{{ posts.count }}</span>
+        </button>
+        <button type="button" class="pf-tab" role="tab" aria-selected="false" data-tab="tagged">
+            <span class="material-symbols-outlined">person_pin</span><span>Tagged</span>
+            <span class="pf-count">{{ tagged.count }}</span>
+        </button>
+        <button type="button" class="pf-tab" role="tab" aria-selected="false" data-tab="saved">
+            <span class="material-symbols-outlined">bookmark</span><span>Saved</span>
+            <span class="pf-count">{{ saved.count }}</span>
+        </button>
+    </div>
+
+    <!-- my posts: edit and delete -->
+    <div class="pf-panel" id="pf-panel-posts" role="tabpanel">
+        {% for post in posts %}
+        <div class="pf-tile">
+            <a class="pf-tile__link" href="{% url 'postview' post.id %}">
+                <img src="/social/{{ post.post_img }}" alt="{{ post.title }}">
+            </a>
+            <div class="pf-tile__bar">
+                <span class="pf-tile__title">{{ post.title }}</span>
+                <a href="{% url 'postedit' post.id %}" aria-label="Edit {{ post.title }}">
+                    <span class="material-symbols-outlined">edit</span>
+                </a>
+                <a href="{% url 'postdelete' post.id %}" aria-label="Delete {{ post.title }}"
+                   onclick="return confirm('Delete this post? This cannot be undone.')">
+                    <span class="material-symbols-outlined">delete</span>
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <p class="pf-empty">No posts yet. <a href="{% url 'postpage' %}">Create your first post</a>.</p>
+        {% endfor %}
+    </div>
+
+    <!-- posts where I am tagged -->
+    <div class="pf-panel" id="pf-panel-tagged" role="tabpanel" hidden>
+        {% for post in tagged %}
+        <div class="pf-tile">
+            <a class="pf-tile__link" href="{% url 'postview' post.id %}">
+                <img src="/social/{{ post.post_img }}" alt="{{ post.title }}">
+            </a>
+            <div class="pf-tile__bar">
+                <span class="pf-tile__title">by {{ post.user.username }}</span>
+            </div>
+        </div>
+        {% empty %}
+        <p class="pf-empty">No tagged posts.</p>
+        {% endfor %}
+    </div>
+
+    <!-- posts I saved -->
+    <div class="pf-panel" id="pf-panel-saved" role="tabpanel" hidden>
+        {% for post in saved %}
+        <div class="pf-tile">
+            <a class="pf-tile__link" href="{% url 'postview' post.id %}">
+                <img src="/social/{{ post.post_img }}" alt="{{ post.title }}">
+            </a>
+            <div class="pf-tile__bar">
+                <span class="pf-tile__title">by {{ post.user.username }}</span>
+            </div>
+        </div>
+        {% empty %}
+        <p class="pf-empty">No saved posts.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<script>
+document.querySelectorAll('.pf-tab').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+        document.querySelectorAll('.pf-tab').forEach(function (t) {
+            t.classList.remove('is-active');
+            t.setAttribute('aria-selected', 'false');
+        });
+        document.querySelectorAll('.pf-panel').forEach(function (p) { p.hidden = true; });
+        tab.classList.add('is-active');
+        tab.setAttribute('aria-selected', 'true');
+        document.getElementById('pf-panel-' + tab.dataset.tab).hidden = false;
+    });
+});
+</script>
+{% endblock %}

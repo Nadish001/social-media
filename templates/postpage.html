@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="/static/css/postpage.css">
+
+<section class="np-card">
+    <h2 class="np-title">Create new post</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label class="np-drop" for="{{ form.post_img.id_for_label }}">
+            <img id="np-preview" class="np-preview" alt="Selected image preview" hidden>
+            <span id="np-hint" class="np-hint">
+                <span class="material-symbols-outlined">add_photo_alternate</span>
+                Click to choose a photo
+            </span>
+        </label>
+        {{ form.post_img }}
+        {% if form.post_img.errors %}<div class="np-error">{{ form.post_img.errors|join:" " }}</div>{% endif %}
+
+        <div class="np-field">
+            <label for="{{ form.title.id_for_label }}">Title</label>
+            {{ form.title }}
+            {% if form.title.errors %}<div class="np-error">{{ form.title.errors|join:" " }}</div>{% endif %}
+        </div>
+
+        <div class="np-field">
+            <label for="{{ form.des.id_for_label }}">Description</label>
+            {{ form.des }}
+            {% if form.des.errors %}<div class="np-error">{{ form.des.errors|join:" " }}</div>{% endif %}
+        </div>
+
+        <div class="np-field">
+            <label for="{{ form.tagged.id_for_label }}">Tag people</label>
+            {{ form.tagged }}
+            <span class="np-note">Hold Ctrl (or Cmd on Mac) to select more than one. Optional.</span>
+        </div>
+
+        <div class="np-actions">
+            <a class="np-cancel" href="{% url 'profile' %}">Cancel</a>
+            <button type="submit" class="np-submit">Share</button>
+        </div>
+    </form>
+</section>
+
+<script>
+(function () {
+    var input = document.getElementById('{{ form.post_img.id_for_label }}');
+    var img = document.getElementById('np-preview');
+    var hint = document.getElementById('np-hint');
+    input.addEventListener('change', function () {
+        var file = input.files[0];
+        if (!file) { return; }
+        img.src = URL.createObjectURL(file);
+        img.hidden = false;
+        hint.hidden = true;
+    });
+})();
+</script>
+{% endblock %}

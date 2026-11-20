@@ -1,0 +1,199 @@
+/* ---------- card ---------- */
+.pf-card {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px;
+  background: #fff;
+  border: 1px solid #e4e2da;
+  border-radius: 12px;
+  text-align: left;
+  color: #1b1b1f;
+  box-shadow: 0 4px 24px rgba(27, 27, 31, 0.06);
+}
+
+/* ---------- header: photo | info, bio below ---------- */
+.pf-header {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  column-gap: 32px;
+  row-gap: 16px;
+  align-items: center;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e4e2da;
+}
+
+.pf-photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #c9d2f5;
+  border: 3px solid #3b5bdb;
+  padding: 2px;
+  display: block;
+}
+
+.pf-info { min-width: 0; }
+
+.pf-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.pf-username {
+  margin: 0 4px 0 0;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.pf-edit {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 18px;
+  border: 1px solid #3b5bdb;
+  border-radius: 8px;
+  background: #fff;
+  color: #3b5bdb;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+.pf-edit:hover { background: #3b5bdb; color: #fff; }
+
+.pf-edit--solid { background: #3b5bdb; color: #fff; }
+.pf-edit--solid:hover { background: #2f4bc0; border-color: #2f4bc0; }
+
+.pf-meta {
+  margin: 0 0 2px;
+  font-size: 14px;
+  color: #5b5b66;
+  overflow-wrap: anywhere;
+}
+
+.pf-bio { grid-column: 1 / -1; }
+.pf-bio p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- tabs ---------- */
+.pf-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  border-bottom: 1px solid #e4e2da;
+}
+
+.pf-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 4px;
+  margin-bottom: -1px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: #5b5b66;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.pf-tab .material-symbols-outlined { font-size: 20px; }
+.pf-tab:hover { color: #1b1b1f; }
+.pf-tab.is-active { color: #1b1b1f; border-bottom-color: #1b1b1f; }
+
+.pf-count {
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: #eef1fc;
+  color: #3b5bdb;
+  font-size: 12px;
+  letter-spacing: 0;
+}
+
+/* ---------- post grids ---------- */
+.pf-panel {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding-top: 16px;
+}
+.pf-panel[hidden] { display: none; }
+
+.pf-tile {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #f6f5f1;
+}
+.pf-tile__link { display: block; width: 100%; height: 100%; }
+.pf-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pf-tile__bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 6px 6px 10px;
+  background: rgba(27, 27, 31, 0.65);
+  color: #fff;
+}
+.pf-tile__title {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pf-tile__bar a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  color: #fff;
+  text-decoration: none;
+}
+.pf-tile__bar a:hover { background: rgba(255, 255, 255, 0.25); }
+.pf-tile__bar .material-symbols-outlined { font-size: 20px; }
+
+.pf-empty {
+  grid-column: 1 / -1;
+  padding: 40px 0;
+  text-align: center;
+  color: #5b5b66;
+  font-size: 15px;
+}
+.pf-empty a { color: #3b5bdb; font-weight: 500; }
+
+/* ---------- small screens ---------- */
+@media (max-width: 560px) {
+  .pf-card { padding: 20px; }
+  .pf-header { grid-template-columns: 84px 1fr; column-gap: 16px; }
+  .pf-photo { width: 84px; height: 84px; }
+  .pf-username { font-size: 18px; }
+  .pf-tabs { gap: 16px; }
+  .pf-tab > span:nth-child(2) { display: none; }   /* icon-only tabs */
+}

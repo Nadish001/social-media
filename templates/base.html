@@ -1,31 +1,53 @@
-    <link rel="stylesheet" href="/static/css/base.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}App Name{% endblock %}</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    
-<body>
-    <div class="base">
-        <div class="top">
-                <h2>App Name</h2>
-        </div>
-        <div class="mid">
-            <div class="con">
-            <a href="#"><span class="material-symbols-outlined cont">home</span>Home</a>
-            <a href="#"><span class="material-symbols-outlined cont">search</span>Search</a>
-            <a href="#"><span class="material-symbols-outlined cont">explore</span>Explore</a>
-            <a href="#"> <span class="material-symbols-outlined cont">notifications</span>Notification</a>
-            <a href="#"><i class="fa-regular fa-paper-plane co"></i> Messages</a>
-            <a href="#"><span class="material-symbols-outlined cont">add_box</span> Create</a>
-            <a href="#">  <span class="material-symbols-outlined cont">person</span>Profile</a>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}?v=2">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="app-body">
+<div class="app-shell">
+    <aside class="app-sidebar">
+        <h2 class="app-brand">App Name</h2>
+
+        <nav class="app-nav">
+            <a class="app-nav__link" href="{% url 'home'%}"><span class="material-symbols-outlined app-nav__icon">home</span><span class="app-nav__label">Home</span></a>
+            <a class="app-nav__link" href="#"><span class="material-symbols-outlined app-nav__icon">search</span><span class="app-nav__label">Search</span></a>
+            <a class="app-nav__link" href="{% url 'explore' %}"><span class="material-symbols-outlined app-nav__icon">explore</span><span class="app-nav__label">Explore</span></a>
+            <a class="app-nav__link" href="#"><span class="material-symbols-outlined app-nav__icon">notifications</span><span class="app-nav__label">Notifications</span></a>
+            <a class="app-nav__link" href="#"><i class="fa-regular fa-paper-plane app-nav__icon"></i><span class="app-nav__label">Messages</span></a>
+            <a class="app-nav__link" href="{% url 'postpage'%}"><span class="material-symbols-outlined app-nav__icon">add_box</span><span class="app-nav__label">Create</span></a>
+            {% if user.is_authenticated %}
+            <a class="app-nav__link" href="{% url 'profile' %}"><span class="material-symbols-outlined app-nav__icon">person</span><span class="app-nav__label">{{ request.user }}</span></a>
+            {% else %}
+            <a class="app-nav__link" href="#"><span class="material-symbols-outlined app-nav__icon">person</span><span class="app-nav__label">Person</span></a>
+            {% endif %}
+        </nav>
+
+        <div class="app-sidebar__footer">
+            <div class="app-sidebar__footer">
+                {% if user.is_authenticated %}
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="app-nav__link app-nav__button">
+                        <span class="material-symbols-outlined app-nav__icon">logout</span>
+                        <span class="app-nav__label">Log out</span>
+                    </button>
+                </form>
+                {% endif %}
             </div>
-
         </div>
-        <div class="bottom">
+    </aside>
 
-        </div>
-    </div>
-    <div class="content">
-            {% block content %}
-            {%endblock%}
-    </div>
-    
+    <main class="app-content">
+        {% block content %}
+        {% endblock %}
+    </main>
+</div>
 </body>
+</html>

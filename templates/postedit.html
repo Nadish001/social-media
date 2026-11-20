@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="/static/css/postpage.html">
+
+<section class="np-card">
+    <h2 class="np-title">Edit post</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label class="np-drop" for="id_post_img">
+            <img id="np-preview" class="np-preview" src="{{ post.post_img.url }}" alt="Current image">
+        </label>
+        <input type="file" name="post_img" id="id_post_img" accept="image/*">
+        <p class="np-note">Click the image to choose a different photo. Leave it as is to keep the current one.</p>
+        {% if form.post_img.errors %}<div class="np-error">{{ form.post_img.errors|join:" " }}</div>{% endif %}
+
+        <div class="np-field">
+            <label for="{{ form.title.id_for_label }}">Title</label>
+            {{ form.title }}
+            {% if form.title.errors %}<div class="np-error">{{ form.title.errors|join:" " }}</div>{% endif %}
+        </div>
+
+        <div class="np-field">
+            <label for="{{ form.des.id_for_label }}">Description</label>
+            {{ form.des }}
+            {% if form.des.errors %}<div class="np-error">{{ form.des.errors|join:" " }}</div>{% endif %}
+        </div>
+
+        <div class="np-field">
+            <label for="{{ form.tagged.id_for_label }}">Tag people</label>
+            {{ form.tagged }}
+            <span class="np-note">Hold Ctrl (or Cmd on Mac) to select more than one. Optional.</span>
+        </div>
+
+        <div class="np-actions">
+            <a class="np-cancel" href="{% url 'profile' %}">Cancel</a>
+            <button type="submit" class="np-submit">Save changes</button>
+        </div>
+    </form>
+</section>
+
+<script>
+document.getElementById('id_post_img').addEventListener('change', function () {
+    var file = this.files[0];
+    if (file) { document.getElementById('np-preview').src = URL.createObjectURL(file); }
+});
+</script>
+{% endblock %}

@@ -10,3 +10,11 @@ class Profile(models.Model):
     pro_pic  = models.ImageField(upload_to='profile',blank=True)
     def __str__(self):
         return self.user.username
+
+class Posts(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    des = models.TextField(blank=True)
+    post_img = models.ImageField(upload_to='posts')
+    tagged = models.ManyToManyField(User, related_name='tagged_posts', blank=True)
+    saved_by = models.ManyToManyField(User, related_name='saved_posts', blank=True)

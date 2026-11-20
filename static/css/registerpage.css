@@ -37,7 +37,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin: 8px 0 0;
+
 }
 
 .reg label {
@@ -102,12 +102,13 @@
 .old {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 6px;
   margin-top: 12px;
   font-size: 14px;
   color: #5b5b66;
 }
-.old p { margin: 0; }
+
 .old a {
   color: #3b5bdb;
   font-weight: 500;

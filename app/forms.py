@@ -21,3 +21,9 @@ class Profileform(forms.ModelForm):
         'placeholde':'enter your  bio'
         }),
      }
+
+class Postform(forms.ModelForm):
+    class Meta:
+        model = Posts
+        fields = ('post_img', 'title', 'des', 'tagged')
+        widgets = {'tagged': forms.SelectMultiple(attrs={'size': 5})}

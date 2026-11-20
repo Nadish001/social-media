@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/postview.css">
+
+<article class="pv-post">
+    <div class="pv-media">
+        <img src="/social/{{ post.post_img }}" alt="{{ post.title }}">
+    </div>
+
+    <div class="pv-side">
+        <header class="pv-head">
+            <span class="pv-avatar" aria-hidden="true">{{ post.user.username|first|upper }}</span>
+            <span class="pv-user">{{ post.user.username }}</span>
+            {% if post.user == request.user %}
+            <a class="pv-link" href="{% url 'postedit' post.id %}">Edit</a>
+            {% endif %}
+        </header>
+
+        <div class="pv-body">
+            <div class="pv-caption">
+                <span class="pv-avatar" aria-hidden="true">{{ post.user.username|first|upper }}</span>
+                <div class="pv-caption__text">
+                    <p><b>{{ post.user.username }}</b> {{ post.title }}</p>
+                    {% if post.des %}<p class="pv-desc">{{ post.des }}</p>{% endif %}
+                </div>
+            </div>
+
+            {% if post.tagged.all %}
+            <div class="pv-tags">
+                <span class="material-symbols-outlined">person_pin</span>
+                {% for u in post.tagged.all %}
+                <span class="pv-chip">{{ u.username }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <footer class="pv-foot">
+            <a class="pv-back" href="{% url 'profile' %}">
+                <span class="material-symbols-outlined">arrow_back</span>Back
+            </a>
+            <form method="post" action="{% url 'postsave' post.id %}">
+                {% csrf_token %}
+                <button type="submit" class="pv-save{% if is_saved %} pv-save--on{% endif %}"
+                        aria-label="{% if is_saved %}Remove from saved{% else %}Save post{% endif %}">
+                    <span class="material-symbols-outlined">bookmark</span>
+                </button>
+            </form>
+        </footer>
+    </div>
+</article>
+{% endblock %}

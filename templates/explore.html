@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="/static/css/explore.css">
+
+<section class="ex-wrap">
+    <form class="ex-search" method="get" action="{% url 'explore' %}" role="search">
+        <span class="material-symbols-outlined" aria-hidden="true">search</span>
+        <input type="search" name="q" value="{{ q }}" placeholder="Search posts or people" aria-label="Search posts or people">
+        <button type="submit">Search</button>
+    </form>
+
+    {% if q %}
+    <p class="ex-result">Results for "{{ q }}" <a href="{% url 'explore' %}">Clear</a></p>
+    {% endif %}
+
+    <div class="ex-grid">
+        {% for post in posts %}
+        <div class="ex-tile">
+            <a class="ex-tile__link" href="{% url 'postview' post.id %}">
+                <img src="/social/{{ post.post_img }}" alt="{{ post.title }}" loading="lazy">
+            </a>
+            <div class="ex-tile__bar">
+                <span class="ex-tile__user">{{ post.user.username }}</span>
+                <form method="post" action="{% url 'postsave' post.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                    <button type="submit"
+                            class="ex-save{% if post.id in saved_ids %} ex-save--on{% endif %}"
+                            aria-label="{% if post.id in saved_ids %}Remove {{ post.title }} from saved{% else %}Save {{ post.title }}{% endif %}">
+                        <span class="material-symbols-outlined">bookmark</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <p class="ex-empty">{% if q %}No posts match your search.{% else %}No posts yet.{% endif %}</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
