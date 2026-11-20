@@ -18,3 +18,11 @@ class Posts(models.Model):
     post_img = models.ImageField(upload_to='posts')
     tagged = models.ManyToManyField(User, related_name='tagged_posts', blank=True)
     saved_by = models.ManyToManyField(User, related_name='saved_posts', blank=True)
+    likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)   # new
+
+
+class Comment(models.Model):                                                       # new
+    post = models.ForeignKey(Posts, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.CharField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)

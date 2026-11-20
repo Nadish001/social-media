@@ -116,6 +116,15 @@
 .ex-save--on .material-symbols-outlined {
   font-variation-settings: 'FILL' 1;
 }
+.ex-like--on { color: #ff6b7a; }
+.ex-like--on .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
+.ex-count { font-size: 13px; margin-left: -6px; min-width: 14px; }
+.ex-save { text-decoration: none; }
+
+@media (max-width: 560px) {
+  .ex-tile__user { display: none; }
+  .ex-tile__bar { justify-content: space-between; }
+}
 
 .ex-empty {
   grid-column: 1 / -1;

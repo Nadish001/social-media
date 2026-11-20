@@ -5,8 +5,9 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.utils.http import url_has_allowed_host_and_scheme
+
 
 
 # Create your views here.
@@ -108,33 +109,75 @@ def postdelete(request, pid):
     return redirect(profilepage)
 
 
-def postview(request, pid):
-    post = Posts.objects.get(id=pid)
-    is_saved = post.saved_by.filter(id=request.user.id).exists()
-    return render(request, 'postview.html', {'post': post, 'is_saved': is_saved})
-
-
-def postsave(request, pid):
-    post = Posts.objects.get(id=pid)
-    if post.saved_by.filter(id=request.user.id).exists():
-        post.saved_by.remove(request.user)
-    else:
-        post.saved_by.add(request.user)
+def go_back(request, pid):
+    # return to the page the action came from, or to the post page
     nxt = request.POST.get('next')
     if nxt and url_has_allowed_host_and_scheme(nxt, allowed_hosts={request.get_host()}):
         return redirect(nxt)
     return redirect('postview', pid=pid)
 
 
+def postview(request, pid):
+    post = Posts.objects.get(id=pid)
+    return render(request, 'postview.html', {
+        'post': post,
+        'is_saved': post.saved_by.filter(id=request.user.id).exists(),
+        'is_liked': post.likes.filter(id=request.user.id).exists(),
+        'likes_count': post.likes.count(),
+        'comments': post.comments.select_related('user').order_by('created_at'),
+    })
 
+
+def postsave(request, pid):
+    if request.method == 'POST':
+        post = Posts.objects.get(id=pid)
+        if post.saved_by.filter(id=request.user.id).exists():
+            post.saved_by.remove(request.user)
+        else:
+            post.saved_by.add(request.user)
+    return go_back(request, pid)
+
+
+def postlike(request, pid):
+    if request.method == 'POST':
+        post = Posts.objects.get(id=pid)
+        if post.likes.filter(id=request.user.id).exists():
+            post.likes.remove(request.user)     # already liked, so unlike
+        else:
+            post.likes.add(request.user)
+    return go_back(request, pid)
+
+
+def commentadd(request, pid):
+    if request.method == 'POST':
+        text = request.POST.get('text', '').strip()[:500]
+        if text:
+            Comment.objects.create(post_id=pid, user=request.user, text=text)
+    return redirect('postview', pid=pid)
+
+
+def commentdelete(request, cid):
+    comment = Comment.objects.get(id=cid)
+    pid = comment.post_id
+    # the comment's author or the post's owner can delete it
+    if request.method == 'POST' and request.user in (comment.user, comment.post.user):
+        comment.delete()
+    return redirect('postview', pid=pid)
 
 
 def explore(request):
     q = request.GET.get('q', '').strip()
-    posts = Posts.objects.select_related('user').order_by('-id')
+    posts = (Posts.objects.select_related('user')
+             .annotate(like_count=Count('likes', distinct=True),
+                       comment_count=Count('comments', distinct=True))
+             .order_by('-id'))
     if q:
         posts = posts.filter(
             Q(title__icontains=q) | Q(des__icontains=q) | Q(user__username__icontains=q)
         )
-    saved_ids = set(Posts.objects.filter(saved_by=request.user).values_list('id', flat=True))
-    return render(request, 'explore.html', {'posts': posts, 'saved_ids': saved_ids, 'q': q})
+    return render(request, 'explore.html', {
+        'posts': posts,
+        'q': q,
+        'saved_ids': set(Posts.objects.filter(saved_by=request.user).values_list('id', flat=True)),
+        'liked_ids': set(Posts.objects.filter(likes=request.user).values_list('id', flat=True)),
+    })

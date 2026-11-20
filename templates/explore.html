@@ -21,6 +21,22 @@
             </a>
             <div class="ex-tile__bar">
                 <span class="ex-tile__user">{{ post.user.username }}</span>
+
+                <form method="post" action="{% url 'postlike' post.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                    <button type="submit" class="ex-save{% if post.id in liked_ids %} ex-like--on{% endif %}"
+                            aria-label="{% if post.id in liked_ids %}Unlike{% else %}Like{% endif %} {{ post.title }}">
+                        <span class="material-symbols-outlined">favorite</span>
+                    </button>
+                </form>
+                <span class="ex-count">{{ post.like_count }}</span>
+
+                <a class="ex-save" href="{% url 'postview' post.id %}" aria-label="{{ post.comment_count }} comments on {{ post.title }}">
+                    <span class="material-symbols-outlined">chat_bubble</span>
+                </a>
+                <span class="ex-count">{{ post.comment_count }}</span>
+
                 <form method="post" action="{% url 'postsave' post.id %}">
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.get_full_path }}">

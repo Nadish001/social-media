@@ -16,6 +16,9 @@ urlpatterns = [
     path('postview/<int:pid>', postview, name='postview'),
     path('postsave/<int:pid>', postsave, name='postsave'),
     path('explore', explore, name='explore'),
+    path('postlike/<int:pid>', postlike, name='postlike'),
+    path('commentadd/<int:pid>', commentadd, name='commentadd'),
+    path('commentdelete/<int:cid>', commentdelete, name='commentdelete'),
 
 ]
 

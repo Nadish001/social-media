@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
 <link rel="stylesheet" href="/static/css/postview.css">
 
@@ -10,6 +10,9 @@
 
     <div class="pv-side">
         <header class="pv-head">
+            <a class="pv-iconlink" href="{% url 'explore' %}" aria-label="Back to Explore">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </a>
             <span class="pv-avatar" aria-hidden="true">{{ post.user.username|first|upper }}</span>
             <span class="pv-user">{{ post.user.username }}</span>
             {% if post.user == request.user %}
@@ -29,23 +32,64 @@
             {% if post.tagged.all %}
             <div class="pv-tags">
                 <span class="material-symbols-outlined">person_pin</span>
-                {% for u in post.tagged.all %}
-                <span class="pv-chip">{{ u.username }}</span>
-                {% endfor %}
+                {% for u in post.tagged.all %}<span class="pv-chip">{{ u.username }}</span>{% endfor %}
             </div>
             {% endif %}
+
+            <ul class="pv-comments">
+                {% for c in comments %}
+                <li class="pv-comment">
+                    <span class="pv-avatar" aria-hidden="true">{{ c.user.username|first|upper }}</span>
+                    <div class="pv-comment__text">
+                        <p><b>{{ c.user.username }}</b> {{ c.text }}</p>
+                        <span class="pv-time">{{ c.created_at|timesince }} ago</span>
+                    </div>
+                    {% if c.user == request.user or post.user == request.user %}
+                    <form method="post" action="{% url 'commentdelete' c.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="pv-del" aria-label="Delete comment"
+                                onclick="return confirm('Delete this comment?')">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </form>
+                    {% endif %}
+                </li>
+                {% empty %}
+                <li class="pv-nocomments">No comments yet. Start the conversation.</li>
+                {% endfor %}
+            </ul>
         </div>
 
         <footer class="pv-foot">
-            <a class="pv-back" href="{% url 'profile' %}">
-                <span class="material-symbols-outlined">arrow_back</span>Back
-            </a>
-            <form method="post" action="{% url 'postsave' post.id %}">
+            <div class="pv-actions">
+                <form method="post" action="{% url 'postlike' post.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="pv-act{% if is_liked %} pv-act--like{% endif %}"
+                            aria-label="{% if is_liked %}Unlike{% else %}Like{% endif %}">
+                        <span class="material-symbols-outlined">favorite</span>
+                    </button>
+                </form>
+
+                <label class="pv-act" for="comment-input" aria-label="Write a comment">
+                    <span class="material-symbols-outlined">chat_bubble</span>
+                </label>
+
+                <form class="pv-actions__end" method="post" action="{% url 'postsave' post.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="pv-act{% if is_saved %} pv-act--save{% endif %}"
+                            aria-label="{% if is_saved %}Remove from saved{% else %}Save post{% endif %}">
+                        <span class="material-symbols-outlined">bookmark</span>
+                    </button>
+                </form>
+            </div>
+
+            <p class="pv-likes">{{ likes_count }} like{{ likes_count|pluralize }}</p>
+
+            <form class="pv-form" method="post" action="{% url 'commentadd' post.id %}">
                 {% csrf_token %}
-                <button type="submit" class="pv-save{% if is_saved %} pv-save--on{% endif %}"
-                        aria-label="{% if is_saved %}Remove from saved{% else %}Save post{% endif %}">
-                    <span class="material-symbols-outlined">bookmark</span>
-                </button>
+                <input id="comment-input" type="text" name="text" maxlength="500"
+                       placeholder="Add a comment" aria-label="Add a comment" autocomplete="off" required>
+                <button type="submit">Post</button>
             </form>
         </footer>
     </div>
