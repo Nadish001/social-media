@@ -9,11 +9,27 @@
         <div class="pf-info">
             <div class="pf-row">
                 <h2 class="pf-username">{{ pro.user }}</h2>
+                {% if is_own_profile %}
                 <a class="pf-edit" href="{% url 'proedit' %}">Edit profile</a>
                 <a class="pf-edit pf-edit--solid" href="{% url 'postpage' %}">New post</a>
+                {% else %}
+                <form method="post" action="{% url 'follow_user' pro.user.username %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                    <button class="pf-edit{% if is_following %} pf-edit--solid{% endif %}" type="submit">
+                        {% if is_following %}Unfollow{% else %}Follow{% endif %}
+                    </button>
+                </form>
+                {% endif %}
             </div>
+            {% if is_own_profile %}
             <p class="pf-meta">{{ pro.email }}</p>
-            <p class="pf-meta">{{ pro.phone }}</p>
+            {% endif %}
+            <div class="pf-stats">
+                <span><strong>{{ posts_count }}</strong> posts</span>
+                <span><strong>{{ followers_count }}</strong> followers</span>
+                <span><strong>{{ following_count }}</strong> following</span>
+            </div>
         </div>
 
         <div class="pf-bio">
@@ -24,16 +40,18 @@
     <div class="pf-tabs" role="tablist">
         <button type="button" class="pf-tab is-active" role="tab" aria-selected="true" data-tab="posts">
             <span class="material-symbols-outlined">grid_on</span><span>Posts</span>
-            <span class="pf-count">{{ posts.count }}</span>
+            <span class="pf-count">{{ posts_count }}</span>
         </button>
         <button type="button" class="pf-tab" role="tab" aria-selected="false" data-tab="tagged">
             <span class="material-symbols-outlined">person_pin</span><span>Tagged</span>
             <span class="pf-count">{{ tagged.count }}</span>
         </button>
+        {% if is_own_profile %}
         <button type="button" class="pf-tab" role="tab" aria-selected="false" data-tab="saved">
             <span class="material-symbols-outlined">bookmark</span><span>Saved</span>
             <span class="pf-count">{{ saved.count }}</span>
         </button>
+        {% endif %}
     </div>
 
     <!-- my posts: edit and delete -->
@@ -45,17 +63,21 @@
             </a>
             <div class="pf-tile__bar">
                 <span class="pf-tile__title">{{ post.title }}</span>
-                <a href="{% url 'postedit' post.id %}" aria-label="Edit {{ post.title }}">
-                    <span class="material-symbols-outlined">edit</span>
-                </a>
-                <a href="{% url 'postdelete' post.id %}" aria-label="Delete {{ post.title }}"
-                   onclick="return confirm('Delete this post? This cannot be undone.')">
-                    <span class="material-symbols-outlined">delete</span>
-                </a>
+                {% if is_own_profile %}
+                    <a href="{% url 'postedit' post.id %}" aria-label="Edit {{ post.title }}">
+                        <span class="material-symbols-outlined">edit</span>
+                    </a>
+                    <a href="{% url 'postdelete' post.id %}" aria-label="Delete {{ post.title }}"
+                       onclick="return confirm('Delete this post? This cannot be undone.')">
+                        <span class="material-symbols-outlined">delete</span>
+                    </a>
+                {% endif %}
             </div>
         </div>
         {% empty %}
-        <p class="pf-empty">No posts yet. <a href="{% url 'postpage' %}">Create your first post</a>.</p>
+        <p class="pf-empty">
+            {% if is_own_profile %}No posts yet. <a href="{% url 'postpage' %}">Create your first post</a>.{% else %}No posts yet.{% endif %}
+        </p>
         {% endfor %}
     </div>
 
@@ -76,6 +98,7 @@
     </div>
 
     <!-- posts I saved -->
+    {% if is_own_profile %}
     <div class="pf-panel" id="pf-panel-saved" role="tabpanel" hidden>
         {% for post in saved %}
         <div class="pf-tile">
@@ -90,6 +113,7 @@
         <p class="pf-empty">No saved posts.</p>
         {% endfor %}
     </div>
+    {% endif %}
 </section>
 
 <script>

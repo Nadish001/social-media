@@ -15,6 +15,16 @@
             </a>
             <span class="pv-avatar" aria-hidden="true">{{ post.user.username|first|upper }}</span>
             <span class="pv-user">{{ post.user.username }}</span>
+            {% if can_follow %}
+            <form class="pv-follow-form" method="post" action="{% url 'follow_user' post.user.username %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button class="pv-follow-button{% if is_following %} pv-follow-button--following{% endif %}"
+                        type="submit">
+                    {% if is_following %}Unfollow{% else %}Follow{% endif %}
+                </button>
+            </form>
+            {% endif %}
             {% if post.user == request.user %}
             <a class="pv-link" href="{% url 'postedit' post.id %}">Edit</a>
             {% endif %}

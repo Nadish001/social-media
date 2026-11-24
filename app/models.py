@@ -11,6 +11,15 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
+class Follow(models.Model):
+    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
+    following = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followers')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=('follower', 'following'), name='unique_user_follow'),
+        ]
+
 class Posts(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)

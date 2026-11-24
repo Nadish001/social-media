@@ -1,3 +1,111 @@
+/* ---------- post and fixed-square media layout ---------- */
+.pv-post {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.9fr);
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e4e2da;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(27, 27, 31, 0.06);
+}
+
+.pv-media {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #111;
+}
+.pv-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pv-side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+.pv-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  padding: 8px 16px;
+  border-bottom: 1px solid #e4e2da;
+}
+.pv-avatar {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #eef1fc;
+  color: #3b5bdb;
+  font-size: 14px;
+  font-weight: 700;
+}
+.pv-user {
+  min-width: 0;
+  overflow: hidden;
+  color: #1b1b1f;
+  font-size: 14px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pv-follow-form { margin-left: auto; }
+.pv-follow-button {
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid #3b5bdb;
+  border-radius: 7px;
+  background: #3b5bdb;
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.pv-follow-button:hover { background: #2f4bc0; }
+.pv-follow-button--following {
+  background: #fff;
+  color: #3b5bdb;
+}
+.pv-follow-button--following:hover {
+  background: #eef1fc;
+}
+
+.pv-body {
+  flex: 1;
+  min-height: 0;
+  padding: 16px;
+  overflow-y: auto;
+}
+.pv-caption {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.pv-caption__text { min-width: 0; }
+.pv-caption__text p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.pv-desc {
+  margin-top: 6px !important;
+  white-space: pre-line;
+}
+
 /* ---------- header back arrow ---------- */
 .pv-iconlink {
   width: 36px;
@@ -11,6 +119,22 @@
   text-decoration: none;
 }
 .pv-iconlink:hover { background: #f1f1f4; color: #1b1b1f; }
+
+.pv-tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 16px;
+  color: #5b5b66;
+  font-size: 14px;
+}
+.pv-chip {
+  padding: 4px 8px;
+  border-radius: 12px;
+  background: #eef1fc;
+  color: #3b5bdb;
+}
 
 /* ---------- comments ---------- */
 .pv-comments {
@@ -125,3 +249,8 @@
   cursor: pointer;
 }
 .pv-form button:hover { text-decoration: underline; }
+
+@media (max-width: 760px) {
+  .pv-post { grid-template-columns: minmax(0, 1fr); }
+  .pv-side { min-height: 420px; }
+}

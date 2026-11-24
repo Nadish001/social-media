@@ -20,7 +20,7 @@
             <a class="app-nav__link" href="#"><span class="material-symbols-outlined app-nav__icon">search</span><span class="app-nav__label">Search</span></a>
             <a class="app-nav__link" href="{% url 'explore' %}"><span class="material-symbols-outlined app-nav__icon">explore</span><span class="app-nav__label">Explore</span></a>
             <a class="app-nav__link" href="#"><span class="material-symbols-outlined app-nav__icon">notifications</span><span class="app-nav__label">Notifications</span></a>
-            <a class="app-nav__link" href="#"><i class="fa-regular fa-paper-plane app-nav__icon"></i><span class="app-nav__label">Messages</span></a>
+            <a class="app-nav__link" href="#"><i class="fa-regular fa-paper-plane app-nav__icon ui"></i><span class="app-nav__label">Messages</span></a>
             <a class="app-nav__link" href="{% url 'postpage'%}"><span class="material-symbols-outlined app-nav__icon">add_box</span><span class="app-nav__label">Create</span></a>
             {% if user.is_authenticated %}
             <a class="app-nav__link" href="{% url 'profile' %}"><span class="material-symbols-outlined app-nav__icon">person</span><span class="app-nav__label">{{ request.user }}</span></a>

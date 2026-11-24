@@ -1,11 +1,13 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from .models import *
 from .forms import *
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db.models import Count, Q
+from django.views.decorators.http import require_POST
 from django.utils.http import url_has_allowed_host_and_scheme
 
 
@@ -50,16 +52,58 @@ def logoutpage(request):
     return redirect(loginpage)
 
 
+@login_required
 def profilepage(request):
-    pro = Profile.objects.get(user = request.user)
+    return _render_profile(request, request.user)
+
+
+@login_required
+def userprofile(request, username):
+    profile_user = get_object_or_404(User, username=username)
+    return _render_profile(request, profile_user)
+
+
+def _render_profile(request, profile_user):
+    pro = get_object_or_404(Profile, user=profile_user)
+    is_own_profile = request.user == profile_user
+    posts = Posts.objects.filter(user=profile_user).select_related('user').order_by('-id')
+    tagged = Posts.objects.filter(tagged=profile_user).select_related('user').order_by('-id')
+    saved = Posts.objects.filter(saved_by=profile_user).select_related('user').order_by('-id')
     context = {
         'pro': pro,
-        'posts': Posts.objects.filter(user=request.user).order_by('-id'),
-        'tagged': Posts.objects.filter(tagged=request.user).order_by('-id'),
-        'saved': Posts.objects.filter(saved_by=request.user).order_by('-id'),
+        'posts': posts,
+        'tagged': tagged,
+        'saved': saved if is_own_profile else Posts.objects.none(),
+        'posts_count': posts.count(),
+        'is_own_profile': is_own_profile,
+        'is_following': not is_own_profile and Follow.objects.filter(
+            follower=request.user, following=profile_user
+        ).exists(),
+        'followers_count': Follow.objects.filter(following=profile_user).count(),
+        'following_count': Follow.objects.filter(follower=profile_user).count(),
     }
     return render(request, 'profile.html', context)
     
+
+@login_required
+@require_POST
+def follow_user(request, username):
+    profile_user = get_object_or_404(User, username=username)
+    if profile_user == request.user:
+        return redirect('profile')
+
+    follow, created = Follow.objects.get_or_create(
+        follower=request.user,
+        following=profile_user,
+    )
+    if not created:
+        follow.delete()
+
+    next_url = request.POST.get('next')
+    if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+        return redirect(next_url)
+    return redirect('userprofile', username=profile_user.username)
+
 
 def profileedit(request):
     pro = Profile.objects.get(user=request.user)
@@ -118,11 +162,16 @@ def go_back(request, pid):
 
 
 def postview(request, pid):
-    post = Posts.objects.get(id=pid)
+    post = Posts.objects.select_related('user').prefetch_related('tagged').get(id=pid)
+    can_follow = request.user.is_authenticated and post.user_id != request.user.id
     return render(request, 'postview.html', {
         'post': post,
         'is_saved': post.saved_by.filter(id=request.user.id).exists(),
         'is_liked': post.likes.filter(id=request.user.id).exists(),
+        'is_following': can_follow and Follow.objects.filter(
+            follower=request.user, following=post.user
+        ).exists(),
+        'can_follow': can_follow,
         'likes_count': post.likes.count(),
         'comments': post.comments.select_related('user').order_by('created_at'),
     })

@@ -20,7 +20,7 @@
                 <img src="/social/{{ post.post_img }}" alt="{{ post.title }}" loading="lazy">
             </a>
             <div class="ex-tile__bar">
-                <span class="ex-tile__user">{{ post.user.username }}</span>
+                <a class="ex-tile__user" href="{% url 'userprofile' post.user.username %}">{{ post.user.username }}</a>
 
                 <form method="post" action="{% url 'postlike' post.id %}">
                     {% csrf_token %}

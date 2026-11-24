@@ -76,6 +76,16 @@
   overflow-wrap: anywhere;
 }
 
+.pf-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 12px;
+  color: #5b5b66;
+  font-size: 14px;
+}
+.pf-stats strong { color: #1b1b1f; }
+
 .pf-bio { grid-column: 1 / -1; }
 .pf-bio p {
   margin: 0;
