@@ -1,0 +1,26 @@
+# Python cache and generated files
+__pycache__/
+*.py[cod]
+
+# Local settings and credentials
+/social/local_settings.py
+.env
+.env.*
+!.env.example
+
+# Local development data and uploaded media
+*.sqlite3
+*.sqlite3-*
+*.sqlite3.bak
+/media/
+
+# Virtual environments
+env/
+.venv/
+venv/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8a4)uri@$(gr6x^54-5m1ki&#wk2e=d+x_f0)(vmhcgk0wnt&9'
+SECRET_KEY = 'django-insecure-local-development-only'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -136,6 +136,20 @@ MEDIA_ROOT = BASE_DIR/"media"
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'nadishk02@gmail.com'
-EMAIL_HOST_PASSWORD = 'mxiacvzmqinxdruc'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
+
+try:
+    from .local_settings import (
+        EMAIL_BACKEND,
+        EMAIL_HOST,
+        EMAIL_HOST_PASSWORD,
+        EMAIL_HOST_USER,
+        EMAIL_PORT,
+        EMAIL_USE_TLS,
+        SECRET_KEY,
+    )
+except ModuleNotFoundError as error:
+    if error.name != f'{__package__}.local_settings':
+        raise
