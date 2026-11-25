@@ -12,7 +12,3 @@ def addprofile(sender, instance, created, **kwargs):
         Profile.objects.create(
             user=user
         )
-
-@receiver(post_delete,sender=User)
-def delprofile(sender,instance,**kwargs):
-    Profile.objects.delete(user=sender)

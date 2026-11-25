@@ -5,7 +5,7 @@
 <section class="ex-wrap">
     <form class="ex-search" method="get" action="{% url 'explore' %}" role="search">
         <span class="material-symbols-outlined" aria-hidden="true">search</span>
-        <input type="search" name="q" value="{{ q }}" placeholder="Search posts or people" aria-label="Search posts or people">
+        <input type="search" name="q" value="{{ q }}" placeholder="Search by username" aria-label="Search by username">
         <button type="submit">Search</button>
     </form>
 
@@ -13,11 +13,14 @@
     <p class="ex-result">Results for "{{ q }}" <a href="{% url 'explore' %}">Clear</a></p>
     {% endif %}
 
+    {% if user_not_found %}
+    <p class="ex-empty" role="status">User not found: "{{ q }}".</p>
+    {% else %}
     <div class="ex-grid">
         {% for post in posts %}
         <div class="ex-tile">
             <a class="ex-tile__link" href="{% url 'postview' post.id %}">
-                <img src="/social/{{ post.post_img }}" alt="{{ post.title }}" loading="lazy">
+                <img src="{{ post.post_img.url }}" alt="{{ post.title }}" loading="lazy">
             </a>
             <div class="ex-tile__bar">
                 <a class="ex-tile__user" href="{% url 'userprofile' post.user.username %}">{{ post.user.username }}</a>
@@ -52,5 +55,6 @@
         <p class="ex-empty">{% if q %}No posts match your search.{% else %}No posts yet.{% endif %}</p>
         {% endfor %}
     </div>
+    {% endif %}
 </section>
 {% endblock %}

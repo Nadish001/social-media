@@ -34,6 +34,15 @@
   display: block;
 }
 
+.pf-photo--fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3b5bdb;
+  font-size: 40px;
+  font-weight: 700;
+}
+
 .pf-info { min-width: 0; }
 
 .pf-row {

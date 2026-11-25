@@ -1,7 +1,47 @@
-{%extends 'base.html'%}
-{% block content%}
-<h1>
-welcome
-</h1>
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
 
-{%endblock%}
+<section class="hm-feed">
+    <h1 class="hm-title">All posts</h1>
+
+    <div class="hm-posts">
+        {% for post in feed_posts %}
+        <article class="hm-post">
+            <header class="hm-post__header">
+                <a class="hm-avatar" href="{% url 'userprofile' post.user.username %}" aria-label="{{ post.user.username }}'s profile">
+                    {{ post.user.username|first|upper }}
+                </a>
+                <a class="hm-username" href="{% url 'userprofile' post.user.username %}">{{ post.user.username }}</a>
+            </header>
+            <a class="hm-post__image" href="{% url 'postview' post.id %}">
+                <img src="{{ post.post_img.url }}" alt="{{ post.title }}" loading="lazy">
+            </a>
+            <div class="hm-post__details">
+                <div class="hm-actions">
+                    <form method="post" action="{% url 'postlike' post.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                        <button class="hm-action{% if post.id in liked_ids %} hm-action--liked{% endif %}" type="submit"
+                                aria-label="{% if post.id in liked_ids %}Unlike{% else %}Like{% endif %} {{ post.title }}">
+                            <span class="material-symbols-outlined">favorite</span>
+                        </button>
+                    </form>
+                    <a class="hm-action" href="{% url 'postview' post.id %}" aria-label="View comments">
+                        <span class="material-symbols-outlined">chat_bubble</span>
+                    </a>
+                </div>
+                <p class="hm-likes">{{ post.like_count }} like{{ post.like_count|pluralize }}</p>
+                <p class="hm-caption"><strong>{{ post.user.username }}</strong> {{ post.title }}</p>
+                {% if post.des %}<p class="hm-description">{{ post.des }}</p>{% endif %}
+                <a class="hm-comments" href="{% url 'postview' post.id %}">View post and comments</a>
+            </div>
+        </article>
+        {% empty %}
+        <p class="hm-empty">No posts yet.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

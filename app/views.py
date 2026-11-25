@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.conf import settings
-from django.db.models import Count, Q
+from django.db.models import Count
 from django.views.decorators.http import require_POST
 from django.utils.http import url_has_allowed_host_and_scheme
 
@@ -14,7 +14,28 @@ from django.utils.http import url_has_allowed_host_and_scheme
 
 # Create your views here.
 def homepage(request):
-    return render(request,'home.html')
+    feed_posts = Posts.objects.select_related('user').annotate(
+        like_count=Count('likes', distinct=True)
+    ).order_by('-id')
+    return render(request, 'home.html', {
+        'feed_posts': feed_posts,
+        'liked_ids': set(Posts.objects.filter(
+            likes=request.user
+        ).values_list('id', flat=True)),
+    })
+
+
+@login_required
+def follow_suggestions(request):
+    following_ids = Follow.objects.filter(
+        follower=request.user
+    ).values_list('following_id', flat=True)
+    suggestions = User.objects.filter(profile__isnull=False).exclude(
+        id=request.user.id
+    ).exclude(id__in=following_ids).order_by('username')
+    return render(request, 'follow_suggestions.html', {
+        'suggestions': suggestions,
+    })
 
 def registerpage(request):
     if request.method == 'POST':
@@ -217,14 +238,22 @@ def commentdelete(request, cid):
 
 def explore(request):
     q = request.GET.get('q', '').strip()
+    if q:
+        profile_user = User.objects.filter(username__iexact=q).first()
+        if profile_user:
+            return redirect('userprofile', username=profile_user.username)
+        return render(request, 'explore.html', {
+            'q': q,
+            'user_not_found': True,
+            'posts': Posts.objects.none(),
+            'saved_ids': set(),
+            'liked_ids': set(),
+        })
+
     posts = (Posts.objects.select_related('user')
              .annotate(like_count=Count('likes', distinct=True),
                        comment_count=Count('comments', distinct=True))
              .order_by('-id'))
-    if q:
-        posts = posts.filter(
-            Q(title__icontains=q) | Q(des__icontains=q) | Q(user__username__icontains=q)
-        )
     return render(request, 'explore.html', {
         'posts': posts,
         'q': q,

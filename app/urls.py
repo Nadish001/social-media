@@ -1,10 +1,9 @@
 from django.urls import path
 from .views import *
-from django.conf.urls.static import static
-from django.conf import settings
 
 urlpatterns = [
     path("home",homepage,name='home'),
+    path('follow-suggestions', follow_suggestions, name='follow_suggestions'),
     path('',loginpage,name='login'),
     path('logout',logoutpage,name='logout'),
     path('register',registerpage,name='register'),
@@ -21,7 +20,4 @@ urlpatterns = [
     path('postlike/<int:pid>', postlike, name='postlike'),
     path('commentadd/<int:pid>', commentadd, name='commentadd'),
     path('commentdelete/<int:cid>', commentdelete, name='commentdelete'),
-
 ]
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

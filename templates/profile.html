@@ -4,7 +4,13 @@
 
 <section class="pf-card">
     <div class="pf-header">
-        <img class="pf-photo" src="/social/{{ pro.pro_pic }}" alt="{{ pro.user }}'s profile photo">
+        {% if pro.pro_pic %}
+        <img class="pf-photo" src="{{ pro.pro_pic.url }}" alt="{{ pro.user }}'s profile photo">
+        {% else %}
+        <div class="pf-photo pf-photo--fallback" role="img" aria-label="{{ pro.user }}'s profile photo">
+            {{ pro.user.username|first|upper }}
+        </div>
+        {% endif %}
 
         <div class="pf-info">
             <div class="pf-row">
@@ -59,7 +65,7 @@
         {% for post in posts %}
         <div class="pf-tile">
             <a class="pf-tile__link" href="{% url 'postview' post.id %}">
-                <img src="/social/{{ post.post_img }}" alt="{{ post.title }}">
+                <img src="{{ post.post_img.url }}" alt="{{ post.title }}">
             </a>
             <div class="pf-tile__bar">
                 <span class="pf-tile__title">{{ post.title }}</span>
@@ -86,7 +92,7 @@
         {% for post in tagged %}
         <div class="pf-tile">
             <a class="pf-tile__link" href="{% url 'postview' post.id %}">
-                <img src="/social/{{ post.post_img }}" alt="{{ post.title }}">
+                <img src="{{ post.post_img.url }}" alt="{{ post.title }}">
             </a>
             <div class="pf-tile__bar">
                 <span class="pf-tile__title">by {{ post.user.username }}</span>
@@ -103,7 +109,7 @@
         {% for post in saved %}
         <div class="pf-tile">
             <a class="pf-tile__link" href="{% url 'postview' post.id %}">
-                <img src="/social/{{ post.post_img }}" alt="{{ post.title }}">
+                <img src="{{ post.post_img.url }}" alt="{{ post.title }}">
             </a>
             <div class="pf-tile__bar">
                 <span class="pf-tile__title">by {{ post.user.username }}</span>

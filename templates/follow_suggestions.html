@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Follow suggestions{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/follow_suggestions.css' %}">
+
+<section class="fs-wrap">
+    <h1>People to follow</h1>
+    <p class="fs-intro">Discover people and see their posts in your feed.</p>
+    <div class="fs-list">
+        {% for person in suggestions %}
+        <article class="fs-person">
+            <a class="fs-avatar" href="{% url 'userprofile' person.username %}" aria-label="{{ person.username }}'s profile">
+                {{ person.username|first|upper }}
+            </a>
+            <a class="fs-username" href="{% url 'userprofile' person.username %}">{{ person.username }}</a>
+            <form method="post" action="{% url 'follow_user' person.username %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit">Follow</button>
+            </form>
+        </article>
+        {% empty %}
+        <p class="fs-empty">You're following everyone. Check back later for new people.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
