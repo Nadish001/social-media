@@ -14,7 +14,6 @@ class Profile(models.Model):
 class Follow(models.Model):
     follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
     following = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followers')
-
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=('follower', 'following'), name='unique_user_follow'),
@@ -27,10 +26,10 @@ class Posts(models.Model):
     post_img = models.ImageField(upload_to='posts')
     tagged = models.ManyToManyField(User, related_name='tagged_posts', blank=True)
     saved_by = models.ManyToManyField(User, related_name='saved_posts', blank=True)
-    likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)   # new
+    likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)   
 
 
-class Comment(models.Model):                                                       # new
+class Comment(models.Model):                                                      
     post = models.ForeignKey(Posts, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.CharField(max_length=500)

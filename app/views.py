@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect,get_object_or_404
+from django.shortcuts import render,redirect
 from .models import *
 from .forms import *
 from django.contrib.auth import authenticate,login,logout
@@ -39,10 +39,11 @@ def loginpage(request):
         user = authenticate(request,username=n1,password=p1)
         if user:
             login(request,user)
-            messages.success(request,"user loggedIn successfully ")
+            # messages.success(request,"user loggedIn successfully ")
             return redirect(homepage)
         else:
-            print("invalid creditential")
+            messages.success(request,"Invalid Crediantial")
+            return redirect(loginpage)
     return render(request,'loginpage.html')
 
 
@@ -59,12 +60,12 @@ def profilepage(request):
 
 @login_required
 def userprofile(request, username):
-    profile_user = get_object_or_404(User, username=username)
+    profile_user = User.objects.get(username=username)
     return _render_profile(request, profile_user)
 
 
 def _render_profile(request, profile_user):
-    pro = get_object_or_404(Profile, user=profile_user)
+    pro = Profile.objects.get(user=profile_user)
     is_own_profile = request.user == profile_user
     posts = Posts.objects.filter(user=profile_user).select_related('user').order_by('-id')
     tagged = Posts.objects.filter(tagged=profile_user).select_related('user').order_by('-id')
@@ -88,7 +89,7 @@ def _render_profile(request, profile_user):
 @login_required
 @require_POST
 def follow_user(request, username):
-    profile_user = get_object_or_404(User, username=username)
+    profile_user = User.objects.get(username=username)
     if profile_user == request.user:
         return redirect('profile')
 
