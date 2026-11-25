@@ -46,7 +46,7 @@ def registerpage(request):
             # Profile.objects.create(user=usr)
             # form.save()
             messages.success(request,"user registered successfully ")
-            # send_mail("welcome mail",f"welcome to our app {usr.username} thanking you for trusting us",settings.EMAIL_HOST_USER,[usr.email])
+            send_mail("welcome mail",f"welcome to our app {usr.username} thanking you for trusting us",settings.EMAIL_HOST_USER,[usr.email])
             return redirect(loginpage)
     else:
         form = Registerform()
