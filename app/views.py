@@ -42,9 +42,6 @@ def registerpage(request):
         form =Registerform(request.POST)
         if form.is_valid():
             usr=form.save()
-            # usr = form.save()
-            # Profile.objects.create(user=usr)
-            # form.save()
             messages.success(request,"user registered successfully ")
             send_mail("welcome mail",f"welcome to our app {usr.username} thanking you for trusting us",settings.EMAIL_HOST_USER,[usr.email])
             return redirect(loginpage)
@@ -56,11 +53,9 @@ def loginpage(request):
     if request.method =='POST':
         n1=request.POST.get('n1')
         p1=request.POST.get('p1')
-        # print(n1,p1)
         user = authenticate(request,username=n1,password=p1)
         if user:
             login(request,user)
-            # messages.success(request,"user loggedIn successfully ")
             return redirect(homepage)
         else:
             messages.success(request,"Invalid Crediantial")

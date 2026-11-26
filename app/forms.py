@@ -10,10 +10,8 @@ class Registerform(UserCreationForm):
         fields = ['username','email']
 
 class Profileform(forms.ModelForm):
-    # phone = forms.IntegerField(validators=['tendigit'])
     class Meta:
         model = Profile
-        # fields = "__all__"
         exclude = ['user']
         widgets = {
         'bio': forms.TextInput(attrs={

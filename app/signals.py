@@ -3,12 +3,12 @@ from .models import *
 from django.db.models.signals import post_save,post_delete
 from django.dispatch import receiver
 
-# if user created then need to create an profile using this user 
+
 
 @receiver(post_save,sender=User)
 def addprofile(sender, instance, created, **kwargs):
-    if created:         #check if the object has been created
-        user = instance     #instance of sender means obj of cls
+    if created:         
+        user = instance    
         Profile.objects.create(
             user=user
         )
